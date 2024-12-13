@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="teacher.css">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="js/Chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Teacher Page</title>
 </head>
 <body>
@@ -251,16 +247,22 @@
                 
                 <div class="classroom-piechart-container">
                     <div class="classroom-piechart-background">
-                            <h2>
-                                Class Overall Progress
-                            </h2>
-                            <div class="card" id="chart-container">
-                                <canvas id="graphCanvas"></canvas>
-                            </div>
+                        <h2>
+                            Class Overall Progress
+                        </h2>
+                        <div class="card" id="chart-container">
+                            <canvas id="graphCanvas"></canvas>
+                        </div>
                     </div>
                 </div>
 
-                
+                <div class="table">
+                    <table>
+                        <tr>
+                            <tbody><!--Add the live table here cause i gave up--></tbody>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -359,9 +361,18 @@
             });
         });
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="teacher.js"></script>
+    
+<!-- jQuery (latest version) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Custom Script -->
+<script src="teacher.js"></script>
+
+
+
 </body>
 <footer>
     <div class="content3">
