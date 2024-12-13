@@ -32,53 +32,68 @@ if (modeSwitch) {
 
 //Button functions
 function myButtonClassroom() {
-    window.location.href = '#Classroom';
+  window.location.href = '#Classroom';
 }
 
 function myButtonPlan() {
-    window.location.href = '#Plan';
+  window.location.href = '#Plan';
 }
 
 function myButtonInsight() {
-    window.location.href = '#Insight';
+  window.location.href = '#Insight';
 }
 
 //Show the dashboard section by default
 function myButtonDashboard() {
-    window.location.href = '#Dashboard';
+  window.location.href = '#Dashboard';
 }
 
-
+// See More Button
 function showSection(sectionId) {
-    // Hide all sections
-    const sections = document.querySelectorAll('section');
-    sections.forEach(section => {
-        section.classList.remove('active');
-    });
+  // Hide all sections
+  const sections = document.querySelectorAll('section');
+  sections.forEach(section => section.classList.remove('active'));
 
-    // Show the selected section
-    const activeSection = document.getElementById(sectionId);
-    if (activeSection) {
-        activeSection.classList.add('active');
-    }
+  // Show the selected section
+  const activeSection = document.getElementById(sectionId);
+  if (activeSection) activeSection.classList.add('active');
 }
 
-//Progress Bar 
-$(".animated-progress span").each(function () {
-    $(this).animate(
-      {
-        width: $(this).attr("data-progress") + "%",
-      },
-      1000
-    );
-    $(this).text($(this).attr("data-progress") + "%");
-  });
+// Pie Chart
+$(document).ready(function () {
+  $.ajax({
+      url: "pie_chart_data.php", // Correct file path
+      method: "GET",
+      success: function (data) {
+          console.log("Data received:", data); // Check the console for the data
+          
+          var names = [];   // For chart labels
+          var values = [];  // For chart data
 
-//See More Button
-function on() {
-    document.getElementById("overlay").style.display = "block";
-  }
-  
-  function off() {
-    document.getElementById("overlay").style.display = "none";
-  }
+          for (var i in data) {
+              // Correct keys based on JSON output
+              names.push(data[i]['lan_name']);
+              values.push(data[i]['progress']);
+          }
+
+          var chartdata = {
+              labels: names,
+              datasets: [{
+                  label: 'Progress',
+                  backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc'],
+                  data: values
+              }]
+          };
+
+          // Render Chart.js
+          var graphTarget = $("#graphCanvas");
+          new Chart(graphTarget, {
+              type: 'pie',
+              data: chartdata
+          });
+      },
+      error: function (error) {
+          console.log("Error fetching data:", error);
+      }
+  });
+});

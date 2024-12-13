@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="teacher.css">
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="js/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Teacher Page</title>
 </head>
 <body>
@@ -245,64 +249,14 @@
                     </div>
                 </div>
                 
-                <div class="classroom-progressBar-container">
-                    <div class="classroom-progressBar-background">
-                        <div class="classroom-progressbar-text">
+                <div class="classroom-piechart-container">
+                    <div class="classroom-piechart-background">
                             <h2>
                                 Class Overall Progress
                             </h2>
-                            <p>
-                                HTML
-                            </p>
-                            <div class="animated-progress progress-blue">
-                                <span data-progress="45"></span>
-                              </div>
-                              <p>
-                                CSS
-                              </p>
-                              <div class="animated-progress progress-green">
-                                <span data-progress="60"></span>
-                              </div>
-                              <p>
-                                PHP
-                              </p>
-                              <div class="animated-progress progress-purple">
-                                <span data-progress="70"></span>
-                              </div>
-                        </div>
-
-                        <button class="See-More" onclick="on()">
-                            See More
-                        </button>
-
-                        <div id="overlay"onclick="off()">  
-                            <div class="see-more-progressbar">
-                                <p>
-                                    HTML
-                                </p>
-                                <div class="animated-progress-1 progress-blue">
-                                    <span data-progress="45"></span>
-                                  </div>
-                                  <p>
-                                    CSS
-                                  </p>
-                                  <div class="animated-progress-1 progress-green">
-                                    <span data-progress="60"></span>
-                                  </div>
-                                  <p>
-                                    PHP
-                                  </p>
-                                  <div class="animated-progress-1 progress-purple">
-                                    <span data-progress="70"></span>
-                                  </div>
-                                <p>
-                                    JavaScript
-                                </p>
-                              <div class="animated-progress-1 progress-red">
-                                <span data-progress="85"></span>
-                              </div> 
+                            <div class="card" id="chart-container">
+                                <canvas id="graphCanvas"></canvas>
                             </div>
-                          </div>
                     </div>
                 </div>
             </div>
@@ -362,6 +316,49 @@
             </div>
         </section>
     </div>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $.ajax({
+                url: "pie_chart_data.php",
+                method: "GET",
+                success: function(data){
+                    console.log(data);
+                    var name = [];
+                    var progress = [];
+
+                    for (var i in data){
+                        name.push(data[i].lan_name);
+
+                        progress.puch(data[i].progress);
+                    }
+                    var chardata = {
+                        labels: name,
+                        datasets: [{
+                            label: "Progress",
+                            backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+                            hoverBackgroundColor: 'rgba(230, 236, 235, 0.75)',
+                            hoverBorderColor: 'rgba(230, 236, 235, 0.75)',
+                            data: progress
+
+
+                        }]
+                    };
+                    var graphProg = $("graphCanvas");
+                    var Graph = new Chart(graphProg, {
+                        type: "pie",
+                        data: chardata,
+
+
+                    })
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="teacher.js"></script>
 </body>
 <footer>
@@ -413,5 +410,4 @@
     </div>
     </div>
 </footer>
-
 </html>
