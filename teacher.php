@@ -186,7 +186,7 @@
                     </h3>
                     <div class="classroom-container-box-1">
                         <h1>
-                            Class Course
+                            Class <!----Later Need to put how many class the student have attend----->
                         </h1>
                     </div>
                 </div>
@@ -259,6 +259,8 @@
                             </div>
                     </div>
                 </div>
+
+                
             </div>
         </section>
 
