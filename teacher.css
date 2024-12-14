@@ -9,6 +9,8 @@
   font-family: 'Poppins', sans-serif;
 }
 
+
+
 :root{
   /* ===== Colors ===== */
   --body-color: #E4E9F7;
@@ -551,7 +553,7 @@ section:target {
 
 .classroom-container-box-1 {
   width: 20%;
-  height: 45vh;
+  height: 20vh;
   overflow: hidden;
   word-break: break-all;
   background-color: #4f5357;
@@ -570,16 +572,19 @@ section:target {
   padding: 1em;
   position: relative;
   left: 30em;
-  top: -20.5em;
+  top: -9.4em;
 }
 
 .student-list {
-  float: right;
-  width: 15em;
-  height: 2em;
-  border-radius: 3em;
-  padding: 0em 0em 0em 1em;
+  width: 150px;
+  height: 30px;
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 32px;
+  border: 1px solid #ccc;
+  margin-left: 35px;
 }
+
 
 .hour-selection-container label {
   color: white;
@@ -671,7 +676,7 @@ section:target {
   gap: 1em;
   float: right;
   position: relative;
-  top: -43.5em;
+  top: -32.5em;
   left: -3.5em;
 }
 
@@ -739,6 +744,65 @@ section:target {
   gap: 1em;
   border-radius: 3em;
   cursor: pointer;
+}
+
+#Plan .plan_background {
+  position: relative;
+  width: 100%;
+  height: 200vh;
+  overflow: hidden;
+  background-color: rgb(235, 229, 229);
+}
+
+header .classroom_selection {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 1.5rem;
+}
+
+.Classroom_Drp {
+  text-align: center;
+  margin: 20px;
+}
+
+#classroom-dropdown-classroom {
+  padding: 5px;
+  font-size: 1rem;
+}
+
+#classroom-dropdown-plan {
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.question_test {
+  text-align: center;
+  margin: 20px;
+}
+
+button {
+  padding: 1px 15px;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.content h2{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content h3{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content table{
+  position: relative;
+  left: 40em;
 }
 
 /* Insight */

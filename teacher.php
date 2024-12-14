@@ -1,3 +1,93 @@
+<?php
+// Include database connection
+include("classroom_db.php");
+
+// Success message placeholder
+$success_message = "";
+
+// Handle Resource Creation
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_resource'])) {
+    $classroom_id = intval($_POST['classroom_id']);
+    $title = $_POST['title'];
+    $resource_type = $_POST['resource_type'];
+    $resource_url = $_POST['resource_url'];
+
+    $stmt = $conn->prepare("INSERT INTO resources (classroom_id, title, resource_type, resource_url) VALUES (?, ?, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("isss", $classroom_id, $title, $resource_type, $resource_url);
+        $stmt->execute();
+        $success_message = "Resource added successfully!";
+        $stmt->close();
+    }
+}
+
+// Handle Resource Deletion
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_resource_id'])) {
+    $resource_id = intval($_POST['delete_resource_id']);
+    $stmt = $conn->prepare("DELETE FROM resources WHERE id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $resource_id);
+        $stmt->execute();
+        $success_message = "Resource deleted successfully!";
+        $stmt->close();
+    }
+}
+
+// Fetch Classrooms for Dropdown
+$classrooms_query = "SELECT id, classroom_name FROM classrooms";
+$classrooms = $conn->query($classrooms_query);
+
+// Fetch Resources for the Selected Classroom
+$selected_classroom = null;
+$classroom_resources = [];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['classroom'])) {
+    $selected_classroom = intval($_POST['classroom']);
+    $stmt = $conn->prepare("SELECT * FROM resources WHERE classroom_id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $selected_classroom);
+        $stmt->execute();
+        $classroom_resources = $stmt->get_result();
+        $stmt->close();
+    }
+}
+
+// Handle Quiz Addition
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_quiz'])) {
+    $classroom_id = intval($_POST['classroom_id']); // Ensure classroom_id is numeric
+    $quiz_title = $_POST['quiz_title'];
+
+    // Check if classroom_id exists in classrooms table
+    $stmt = $conn->prepare("SELECT id FROM classrooms WHERE id = ?");
+    $stmt->bind_param("i", $classroom_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows == 0) {
+        die("Error: Classroom ID $classroom_id does not exist.");
+    }
+    $stmt->close();
+
+    // Insert quiz into quizzes table
+    $stmt = $conn->prepare("INSERT INTO quizzes (classroom_id, quiz_title) VALUES (?, ?)");
+    if ($stmt === false) {
+        die("Error preparing statement: " . $conn->error);
+    }
+    $stmt->bind_param("is", $classroom_id, $quiz_title);
+    if (!$stmt->execute()) {
+        die("Error executing query: " . $stmt->error);
+    }
+
+    $quiz_id = $stmt->insert_id; // Get the new quiz ID
+    $stmt->close();
+
+    echo "Quiz added successfully!";
+}
+
+// Close the database connection at the end
+$conn->close();
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -181,24 +271,27 @@
                         Classroom Course
                     </h3>
                     <div class="classroom-container-box-1">
-                        <h1>
-                            Class <!----Later Need to put how many class the student have attend----->
-                        </h1>
+                    <form method="POST" action="" class="Classroom_Drp">
+                            <label for="classroom" style="color: white;">Choose a classroom:</label>
+                            <select name="classroom" id="classroom-dropdown-classroom" onchange="this.form.submit()">
+                                <option value="">-- Select Classroom --</option>
+                                <?php while ($row = $classrooms->fetch_assoc()): ?>
+                                    <option value="<?php echo $row['id']; ?>" <?php echo ($row['id'] == $selected_classroom) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($row['classroom_name']); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                    </form>
                     </div>
                 </div>
 
                 <div class="student-hour-selection">
                     <div class="hour-selection-container">
                         <form method="#">
-                            <label for="Student-List">Student Name:</label>
-                            <select name="Student-List-Container" id="" class="student-list">
-                                <option value="">Select a specific student</option>
-                                <option value="Student 1">Student 1</option>
-                                <option value="Student 2">Student 2</option>
-                                <option value="Student 3">Student 3</option>
-                                <option value="Student 4">Student 4</option>
-                                <option value="Student 5">Student 5</option>
-                            </select><br>
+                        <label for="student-list">Student Name:</label>
+                        <select name="student-list" id="student-list" class="student-list">
+                            <option value="">Select a student</option>
+                        </select>
                         </form>
                         <div class="detail-info-container">
                             <div class="details-info-1">
@@ -267,7 +360,106 @@
         </section>
 
         <section id="Plan" onclick="myButtonPlan()">
+            <div class="plan_background">
+                <header class="classroom_selection" style="position: relative;left: 7em;">
+                    <?php echo $selected_classroom ? "Classroom ID: " . htmlspecialchars($selected_classroom) : "Select a Classroom"; ?>
+                </header>
 
+                <!-- Success Message -->
+                <?php if (isset($success_message)): ?>
+                    <p style="color: green; text-align: center;"><?php echo $success_message; ?></p>
+                <?php endif; ?>
+
+                <!-- Classroom Dropdown -->
+                <form method="POST" action="" class="Classroom_Drp">
+                    <label for="classroom">Choose a classroom:</label>
+                    <select name="classroom" id="classroom-dropdown" onchange="this.form.submit()">
+                        <option value="">-- Select Classroom --</option>
+                        <?php while ($row = $classrooms->fetch_assoc()): ?>
+                            <option value="<?php echo $row['id']; ?>" <?php echo ($row['id'] == $selected_classroom) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($row['classroom_name']); ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </form>
+
+
+                <!-- Manage Resources -->
+                 <div class="content">
+                    <h2>Manage Resources</h2>
+                    <table border="1">
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>URL</th>
+                            <th>Actions</th>
+                        </tr>
+                        <?php if ($classroom_resources && $classroom_resources->num_rows > 0): ?>
+                            <?php while ($resource = $classroom_resources->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($resource['title']); ?></td>
+                                    <td><?php echo htmlspecialchars($resource['resource_type']); ?></td>
+                                    <td><?php echo htmlspecialchars($resource['resource_url']); ?></td>
+                                    <td>
+                                        <form method="POST" action="" style="display:inline;">
+                                            <input type="hidden" name="delete_resource_id" value="<?php echo $resource['id']; ?>">
+                                            <button type="submit">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr><td colspan="4">No resources found for this classroom.</td></tr>
+                        <?php endif; ?>
+                    </table>
+
+                    <!-- Add Resource Form -->
+                    <h3>Add New Resource</h3>
+                    <form method="POST" action="" class="question_test">
+                        <input type="hidden" name="classroom_id" value="<?php echo $selected_classroom; ?>">
+                        <label>Title:</label>
+                        <input type="text" name="title" required>
+                        <label>Type:</label>
+                        <select name="resource_type">
+                            <option value="link">Link</option>
+                            <option value="video">Video</option>
+                            <option value="document">Document</option>
+                        </select>
+                        <label>URL:</label>
+                        <input type="text" name="resource_url" required>
+                        <button type="submit" name="add_resource">Add Resource</button>
+                    </form>
+
+                    <form method="POST" action="" class="question_test">
+                        <input type="hidden" name="classroom_id" value="<?php echo $selected_classroom; ?>">
+                        <label>Quiz Title:</label>
+                        <input type="text" name="quiz_title" required>
+                        <h3>Questions</h3>
+                        <div id="questions">
+                            <div>
+                                <label>Question:</label>
+                                <input type="text" name="questions[]" required>
+                                <label>Option A:</label>
+                                <input type="text" name="options_a[]" required>
+                                <label>Option B:</label>
+                                <input type="text" name="options_b[]" required>
+                                <label>Option C:</label>
+                                <input type="text" name="options_c[]" required>
+                                <label>Option D:</label>
+                                <input type="text" name="options_d[]" required>
+                                <label>Correct Option:</label>
+                                <select name="correct_options[]">
+                                    <option value="a">A</option>
+                                    <option value="b">B</option>
+                                    <option value="c">C</option>
+                                    <option value="d">D</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" name="add_quiz">Add Quiz</button>
+                    </form>
+                </div>
+            </div>
         </section>
 
         <section id="Insight" onclick="myButtonInsight()">

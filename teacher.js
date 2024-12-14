@@ -7,7 +7,7 @@ const body = document.querySelector('body'),
 
 // Toggle Sidebar
 toggle.addEventListener("click", () => {
-    sidebar.classList.toggle("close");
+      sidebar.classList.toggle("close");
 });
 
 // Expand Sidebar on Search Click
@@ -112,3 +112,78 @@ $(document).ready(function(){
   url: 'table_config.php'
   });
 });
+
+//The Student Dropdown
+document.addEventListener("DOMContentLoaded", function () {
+  // Fetch students and populate the dropdown
+  fetch("get_students.php")
+      .then(response => response.json())
+      .then(data => {
+          const studentDropdown = document.getElementById("student-list");
+          data.forEach(student => {
+              const option = document.createElement("option");
+              option.value = student.id; // Use student ID as the value
+              option.textContent = student.name; // Display student name
+              studentDropdown.appendChild(option);
+          });
+      })
+      .catch(error => {
+          console.error("Error fetching students:", error);
+      });
+
+  // Add event listener to the dropdown
+  const studentDropdown = document.getElementById("student-list");
+  studentDropdown.addEventListener("change", function () {
+      const selectedStudentId = this.value;
+      if (selectedStudentId) {
+          // Fetch data for the selected student
+          fetch(`get_student_data.php?student_id=${selectedStudentId}`)
+              .then(response => response.json())
+              .then(data => {
+                  if (data.error) {
+                      console.error(data.error);
+                      alert(data.error);
+                      return;
+                  }
+
+                  // Update the content of the four boxes
+                  document.querySelector(".details-info-1 h1").textContent = `${data.time_spent} hrs`;
+                  document.querySelector(".details-info-2 .text-answer").textContent = data.questions_answered;
+                  document.querySelector(".details-info-3 .completed-list").textContent = data.lessons_completed;
+                  document.querySelector(".details-info-4 h1").textContent = `${data.challenges_solved} solved`;
+              })
+              .catch(error => {
+                  console.error("Error fetching student data:", error);
+              });
+      }
+  });
+});
+
+//The Classroom Dropdown
+function loadClassroom() {
+  const classroom = document.getElementById('classroom-dropdown').value;
+
+  if (classroom) {
+      fetch('fecth_classroom.php', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `classroom=${encodeURIComponent(classroom)}`
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.status === 'success') {
+              document.getElementById('content').innerHTML = `<h2>${classroom}</h2><p>${data.content}</p>`;
+          } else {
+              document.getElementById('content').innerHTML = `<p style="color: red;">${data.message}</p>`;
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          document.getElementById('content').innerHTML = `<p style="color: red;">An error occurred. Please try again later.</p>`;
+      });
+  } else {
+      alert('Please select a classroom!');
+  }
+}
