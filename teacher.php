@@ -481,7 +481,7 @@ $conn->close();
         <section id="Insight" onclick="myButtonInsight()">
             <div class="insight_background">
                 <h1>Student Performance Dashboard</h1>
-                <table id="performanceTable">
+                <table id="performanceTable" class="Student-progress">
                     <thead>
                         <tr>
                             <th>Student Name</th>
@@ -498,7 +498,7 @@ $conn->close();
 
                 <div id="charts">
                     <canvas id="completionRateChart"></canvas>
-                    <canvas id="timeSpentChart"></canvas>
+                    <canvas id="timeSpentChart" style="margin-top: -22em;"></canvas>
                     <canvas id="coreUnderstandingChart"></canvas>
                 </div>
             </div>

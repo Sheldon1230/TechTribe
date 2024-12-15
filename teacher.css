@@ -799,8 +799,8 @@ button {
 }
 
 .content table{
-  position: relative;
-  left: 40em;
+  justify-content: center;
+  display: flex;
 }
 
 /* Insight */
@@ -850,7 +850,7 @@ h1 {
   text-align: center;
 }
 
-table {
+.Student-progress {
   width: 50%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -931,7 +931,6 @@ canvas {
     }
 }
 
-/* User Profile Box */
 .user-profile {
   color: white
 }
