@@ -98,6 +98,136 @@ $(document).ready(function () {
   });
 });
 
+//Pie Chart 2
+document.addEventListener("DOMContentLoaded", function () {
+    // Fetch data for the pie charts
+    fetch("student_performance.php")
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.status === "success") {
+                createPieCharts(data.data);
+            } else {
+                console.error("Error fetching data:", data.message);
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+
+    function createPieCharts(data) {
+        // Get unique task names
+        const taskNames = [...new Set(data.map((row) => row.task_name))];
+
+        // Calculate data for Completion Rate pie chart
+        const completionRateByTask = taskNames.map((task) => {
+            const taskData = data.filter((row) => row.task_name === task);
+            return taskData.reduce((sum, row) => sum + row.completion_rate, 0) / taskData.length;
+        });
+
+        // Calculate data for Time Spent pie chart
+        const timeSpentByTask = taskNames.map((task) => {
+            const taskData = data.filter((row) => row.task_name === task);
+            return taskData.reduce((sum, row) => sum + row.time_spent, 0);
+        });
+
+        // Calculate data for Core Concept Understanding pie chart
+        const coreUnderstandingByTask = taskNames.map((task) => {
+            const taskData = data.filter((row) => row.task_name === task);
+            return taskData.reduce((sum, row) => sum + row.core_concept_understanding, 0) / taskData.length;
+        });
+
+        // Render the Completion Rate pie chart
+        const completionRateChart = document.getElementById("completionRateChart");
+        if (completionRateChart) {
+            new Chart(completionRateChart, {
+                type: "pie",
+                data: {
+                    labels: taskNames,
+                    datasets: [
+                        {
+                            label: "Completion Rate (%)",
+                            data: completionRateByTask,
+                            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+                        },
+                    ],
+                },
+            });
+        }
+
+        // Render the Time Spent pie chart
+        const timeSpentChart = document.getElementById("timeSpentChart");
+        if (timeSpentChart) {
+            new Chart(timeSpentChart, {
+                type: "pie",
+                data: {
+                    labels: taskNames,
+                    datasets: [
+                        {
+                            label: "Time Spent (Seconds)",
+                            data: timeSpentByTask,
+                            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+                        },
+                    ],
+                },
+            });
+        }
+
+        // Render the Core Concept Understanding pie chart
+        const coreUnderstandingChart = document.getElementById("coreUnderstandingChart");
+        if (coreUnderstandingChart) {
+            new Chart(coreUnderstandingChart, {
+                type: "pie",
+                data: {
+                    labels: taskNames,
+                    datasets: [
+                        {
+                            label: "Core Concept Understanding (%)",
+                            data: coreUnderstandingByTask,
+                            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+                        },
+                    ],
+                },
+            });
+        }
+    }
+});
+
+//Data for the table
+document.addEventListener("DOMContentLoaded", function () {
+  // Fetch data from the database
+  fetch("student_performance.php") // Ensure the correct PHP endpoint
+      .then((response) => response.json()) // Parse response as JSON
+      .then((data) => {
+          if (data.status === "success") {
+              populateTable(data.data); // Populate table with data
+          } else {
+              console.error("Error:", data.message);
+          }
+      })
+      .catch((error) => {
+          console.error("Error fetching data:", error);
+      });
+
+  // Function to populate the table
+  function populateTable(data) {
+      const tableBody = document.querySelector("#performanceTable tbody");
+      tableBody.innerHTML = ""; // Clear any existing rows
+
+      // Loop through the data and create table rows
+      data.forEach((row) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+              <td>${row.name}</td>
+              <td>${row.task_name}</td>
+              <td>${row.completion_rate}</td>
+              <td>${row.time_spent}</td>
+              <td>${row.core_concept_understanding}</td>
+          `;
+          tableBody.appendChild(tr); // Append row to table body
+      });
+  }
+});
+
 
 // Table
 $(document).ready(function(){
@@ -187,3 +317,101 @@ function loadClassroom() {
       alert('Please select a classroom!');
   }
 }
+
+
+//Test
+document.addEventListener("DOMContentLoaded", function() {
+  // Fetch student performance data from PHP
+  fetch('get_student_performance.php')
+      .then(response => response.json())
+      .then(data => {
+          populateTable(data);
+          visualizeMetrics(data);
+      })
+      .catch(error => {
+          console.error("Error fetching data:", error);
+      });
+
+  // Function to populate the table with student performance data
+  function populateTable(data) {
+      const tableBody = document.querySelector('#performanceTable tbody');
+      tableBody.innerHTML = ''; // Clear existing rows
+
+      data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>${row.name}</td>
+              <td>${row.task_name}</td>
+              <td>${row.completion_rate}</td>
+              <td>${row.time_spent}</td>
+              <td>${row.core_concept_understanding}</td>
+          `;
+          tableBody.appendChild(tr);
+      });
+  }
+
+  // Function to visualize key metrics (e.g., Completion Rates, Time Spent, Core Concept Understanding)
+  function visualizeMetrics(data) {
+      const completionRates = data.map(row => row.completion_rate);
+      const timeSpent = data.map(row => row.time_spent);
+      const coreUnderstanding = data.map(row => row.core_concept_understanding);
+      const studentNames = [...new Set(data.map(row => row.name))]; // Get unique student names
+
+      // Completion Rates Chart
+      new Chart(document.getElementById('completionRateChart'), {
+          type: 'bar',
+          data: {
+              labels: studentNames,
+              datasets: [{
+                  label: 'Completion Rate (%)',
+                  data: completionRates,
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true,
+              scales: {
+                  y: { beginAtZero: true }
+              }
+          }
+      });
+
+      // Time Spent Chart
+      new Chart(document.getElementById('timeSpentChart'), {
+          type: 'line',
+          data: {
+              labels: studentNames,
+              datasets: [{
+                  label: 'Time Spent (Seconds)',
+                  data: timeSpent,
+                  backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                  borderColor: 'rgba(255, 159, 64, 1)',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true
+          }
+      });
+
+      // Core Understanding Chart
+      new Chart(document.getElementById('coreUnderstandingChart'), {
+          type: 'radar',
+          data: {
+              labels: studentNames,
+              datasets: [{
+                  label: 'Core Concept Understanding (%)',
+                  data: coreUnderstanding,
+                  backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                  borderColor: 'rgba(153, 102, 255, 1)',
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true
+          }
+      });
+  }
+});

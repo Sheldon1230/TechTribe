@@ -9,8 +9,6 @@
   font-family: 'Poppins', sans-serif;
 }
 
-
-
 :root{
   /* ===== Colors ===== */
   --body-color: #E4E9F7;
@@ -840,6 +838,46 @@ button {
   cursor: pointer;
 }
 
+.insight_background {
+  position: relative;
+  width: 100%;
+  height: 200vh;
+  overflow: hidden;
+  background-color: rgb(235, 229, 229);
+}
+
+h1 {
+  text-align: center;
+}
+
+table {
+  width: 50%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  position: absolute;
+  left: 25em;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+#charts {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-around;
+}
+
+canvas {
+  max-width: 400px;
+}
+
 /* User Profile */
 #user-page .user-background {
   position: relative;
@@ -894,9 +932,14 @@ button {
 }
 
 /* User Profile Box */
-.user-profile_container {
+.user-profile {
+  color: white
+}
+
+.user-profile-container {
   background-color: #afafaf;
-  width: 25em;
+  padding: 2em;
+  width: 35em;
   height: 35em;
   position: absolute;
   right: 35em;
@@ -904,67 +947,39 @@ button {
   border-radius: 2em;
 }
 
-.user-profile-ring {
-  border: solid blue;
-  border-radius: 10em;
-  position: absolute;
-  top: 0.5em;
-  left: 7.5em;
-}
-
-.user-profile-image {
-  border-radius: 10em;
-  padding: 10px;
-}
-
-.user-name {
+.user-profile-container h1 {
   position: relative;
-  bottom: -10em;
+  top: -1em;
+  color: #000000;
 }
 
-.user-name h1 {
-  text-align: center;
+.email-text {
+  float: right;
+  color: #000000;
+}
+
+.bio-text {
   position: relative;
-  bottom: -1.2em;
+  bottom: -16em;
+  color: #000000;
 }
 
-.user-name h3 {
-  text-align: center;
+.user-image {
+  height: 20vh;
+  width: 30%;
   position: relative;
-  bottom: -1.7em;
-  color: #5b5a5ac0;
+  top: -2.1em;
+  right: -3em;
+  border-radius: 2em;
 }
 
-.button-design {
-  display: flex;
-  gap: 2em;  
-  justify-content: center;
-}
-
-.button-design button{
+.logout-link {
+  float: right;
   position: relative;
-  bottom: -17em;
-  width: 10em;
-  height: 5em;
-  border-radius: 3em;
-  cursor: pointer;
+  left: -7.5em;
+  top: -3.7em;
+  text-decoration-line: none
 }
-
-.bottom-skill {
-  width: 25em;
-  height: 10em;
-  background-color: #471c75;
-  position: absolute;
-  bottom: 0;
-  border-radius: 0em 0em 2em 2em;
-}
-
-.bottom-skill h2 {
-  text-align: center;
-}
-
-
-
 
 
 /* Footer */

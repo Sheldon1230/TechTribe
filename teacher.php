@@ -82,6 +82,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_quiz'])) {
     echo "Quiz added successfully!";
 }
 
+    session_start();
+    include('user_db.php');
+
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: login.html"); // Redirect to login if not logged in
+        exit;
+    }
+
+    $user_id = $_SESSION['user_id'];
+
+    // Fetch user data
+    $sql = "SELECT * FROM users WHERE id = $user_id";
+    $result = $conn->query($sql);
+    $user = $result->fetch_assoc();
+
+
 // Close the database connection at the end
 $conn->close();
 ?>
@@ -463,7 +479,29 @@ $conn->close();
         </section>
 
         <section id="Insight" onclick="myButtonInsight()">
+            <div class="insight_background">
+                <h1>Student Performance Dashboard</h1>
+                <table id="performanceTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Task Name</th>
+                            <th>Completion Rate (%)</th>
+                            <th>Time Spent (Seconds)</th>
+                            <th>Core Concept Understanding (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be inserted here dynamically -->
+                    </tbody>
+                </table>
 
+                <div id="charts">
+                    <canvas id="completionRateChart"></canvas>
+                    <canvas id="timeSpentChart"></canvas>
+                    <canvas id="coreUnderstandingChart"></canvas>
+                </div>
+            </div>
         </section>
 
         <section id="user-page">
@@ -490,23 +528,19 @@ $conn->close();
                 <div class="code_text">Vue.js</div>
                 <div class="code_text">MongoDB</div>
     
-                <div class="user-profile_container">
-                    <div class="user-profile-ring">
-                        <img src="/user.jpg" class="user-profile-image">
-                    </div>
-    
-                    <div class="user-name">
-                        <h1><u>User Name</u></h1>
-                        <h3><u>Profession</u></h3>
-                    </div>
-    
-                    <div class="button-design">
-                        <button>Massage</button>
-                        <button>Notification</button>
-                    </div>
-    
-                    <div class="bottom-skill">
-                        <h2>Skill</h2>
+                <div class="user-profile">
+                    <div class="user-profile-container">
+                        <h1>Welcome, <?php echo $user['username']; ?></h1>
+                        <p class="email-text">Email: <?php echo $user['email']; ?></p>
+                        <p class="bio-text">Bio: <?php echo $user['bio'] ?: 'No bio added yet'; ?></p>
+                        <img src="user2.jpg" class="user-image">
+
+                        <form action="update_user.php" method="POST">
+                            <textarea name="bio" placeholder="Update your bio" class="textfield"><?php echo $user['bio']; ?></textarea>
+                            <button type="submit" class="updates-button">Update</button>
+                        </form>
+
+                        <a href="logout.php" class="logout-link">Logout</a>
                     </div>
                 </div>
             </div>
@@ -554,13 +588,8 @@ $conn->close();
         });
     </script>
     
-<!-- jQuery (latest version) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- Custom Script -->
 <script src="teacher.js"></script>
 
 
