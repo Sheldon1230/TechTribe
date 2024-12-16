@@ -12,6 +12,29 @@
 </head>
 
 <body>
+    <div class="Dashboard-Container-Design">
+        <div class="code_text">HTML</div>
+        <div class="code_text">CSS</div>
+        <div class="code_text">JavaScript</div>
+        <div class="code_text">PHP</div>
+        <div class="code_text">Java</div>
+        <div class="code_text">C++</div>
+        <div class="code_text">Ruby</div>
+        <div class="code_text">Python</div>
+        <div class="code_text">Node.js</div>
+        <div class="code_text">React.js</div>
+        <div class="code_text">React</div>
+       <div class="code_text">Kotlin</div>
+        <div class="code_text">Swift</div>
+        <div class="code_text">Go</div>
+        <div class="code_text">Rust</div>
+        <div class="code_text">SQL</div>
+        <div class="code_text">TypeScript</div>
+        <div class="code_text">Perl</div>
+        <div class="code_text">Angular</div>
+        <div class="code_text">Vue.js</div>
+        <div class="code_text">MongoDB</div>
+    </div>
     <div class="main">
         <input type="checkbox" id="chk" aria-hidden="true">
 

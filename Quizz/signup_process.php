@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "DanishLam";
 $password = "Dsl140904";
-$database = "quiz_db";
+$database = "webtribe_db";
 
 try {
     $pdo = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $stmt = $pdo->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
         $stmt->execute([$username, $email, $password, $role]);
-        header("Location: login.html");
+        header("Location: loginform.html");
         exit();
     } catch(PDOException $e) {
         die("Registration failed: " . $e->getMessage());

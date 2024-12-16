@@ -55,12 +55,12 @@
             <img src="TechTribe Logo.png"  style="width:100px;height:70px;">
         </div>
         <nav class="nav-menu">
-            <div class="nav-item"><i class="fas fa-user"></i><a href="S_profile_page.html"> Profile</a></div>
-            <div class="nav-item"><i class="fas fa-cogs"></i><a href="S_services.html"> Services</a></div>
+            <div class="nav-item"><i class="fas fa-user"></i><a href="S_profile_page.php"> Profile</a></div>
+            <div class="nav-item"><i class="fas fa-cogs"></i><a href="S_services.php"> Services</a></div>
         </nav>
         <div class="search-section">
             <input type="text" class="search-box" placeholder="Search...">
-            <a href="login form/login form/login form/login form.html" class="sign-in-btn"><i class="fas fa-sign-in-alt"></i> SIGN IN / SIGN UP</a>
+            <a href="login form.html" class="sign-in-btn"><i class="fas fa-sign-in-alt"></i> SIGN IN / SIGN UP</a>
         </div>      
     </header>
 

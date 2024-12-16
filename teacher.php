@@ -51,37 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['classroom'])) {
     }
 }
 
-// Handle Quiz Addition
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_quiz'])) {
-    $classroom_id = intval($_POST['classroom_id']); // Ensure classroom_id is numeric
-    $quiz_title = $_POST['quiz_title'];
-
-    // Check if classroom_id exists in classrooms table
-    $stmt = $conn->prepare("SELECT id FROM classrooms WHERE id = ?");
-    $stmt->bind_param("i", $classroom_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows == 0) {
-        die("Error: Classroom ID $classroom_id does not exist.");
-    }
-    $stmt->close();
-
-    // Insert quiz into quizzes table
-    $stmt = $conn->prepare("INSERT INTO quizzes (classroom_id, quiz_title) VALUES (?, ?)");
-    if ($stmt === false) {
-        die("Error preparing statement: " . $conn->error);
-    }
-    $stmt->bind_param("is", $classroom_id, $quiz_title);
-    if (!$stmt->execute()) {
-        die("Error executing query: " . $stmt->error);
-    }
-
-    $quiz_id = $stmt->insert_id; // Get the new quiz ID
-    $stmt->close();
-
-    echo "Quiz added successfully!";
-}
-
     session_start();
     include('user_db.php');
 
@@ -444,35 +413,6 @@ $conn->close();
                         <label>URL:</label>
                         <input type="text" name="resource_url" required>
                         <button type="submit" name="add_resource">Add Resource</button>
-                    </form>
-
-                    <form method="POST" action="" class="question_test">
-                        <input type="hidden" name="classroom_id" value="<?php echo $selected_classroom; ?>">
-                        <label>Quiz Title:</label>
-                        <input type="text" name="quiz_title" required>
-                        <h3>Questions</h3>
-                        <div id="questions">
-                            <div>
-                                <label>Question:</label>
-                                <input type="text" name="questions[]" required>
-                                <label>Option A:</label>
-                                <input type="text" name="options_a[]" required>
-                                <label>Option B:</label>
-                                <input type="text" name="options_b[]" required>
-                                <label>Option C:</label>
-                                <input type="text" name="options_c[]" required>
-                                <label>Option D:</label>
-                                <input type="text" name="options_d[]" required>
-                                <label>Correct Option:</label>
-                                <select name="correct_options[]">
-                                    <option value="a">A</option>
-                                    <option value="b">B</option>
-                                    <option value="c">C</option>
-                                    <option value="d">D</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" name="add_quiz">Add Quiz</button>
                     </form>
                 </div>
             </div>
